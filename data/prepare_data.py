@@ -10,16 +10,19 @@ def get_cifar100_dataloaders(data_dir="/home/mahyad/projects/ViT_vs_ResNet-50/da
 
     # Transforms
     train_transform = transforms.Compose([
+        transforms.Resize((224, 224)),
         transforms.RandomHorizontalFlip(),
-        transforms.RandomCrop(32, padding=4),
+        transforms.RandomCrop(224, padding=4),
         transforms.ToTensor(),
         transforms.Normalize(mean, std)
     ])
 
     test_transform = transforms.Compose([
+        transforms.Resize((224, 224)),
         transforms.ToTensor(),
         transforms.Normalize(mean, std)
     ])
+
 
     # Load datasets
     train_dataset = datasets.CIFAR100(root=data_dir, train=True, download=True, transform=train_transform)

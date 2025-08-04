@@ -5,8 +5,12 @@ from models.vit_model import get_vit_model
 from models.resnet_model import get_resnet_model
 from train.train_vit import train as train_vit
 from train.train_resnet import train as train_resnet
-from evaluate import evaluate_model
+from evaluate.evaluate import evaluate_model
 from utils.helpers import set_seed
+
+import sys
+sys.path.append('/content/ViT_vs_ResNet-50')
+
 
 if __name__ == "__main__":
     # Load config
@@ -49,7 +53,7 @@ if __name__ == "__main__":
         val_loader=val_loader,
         device=device,
         epochs=cfg['training']['epochs'],
-        lr=cfg['optimizer']['resnet']['lr'],
+        lr = float(cfg['optimizer']['vit']['lr']),
         optimizer_type=cfg['optimizer']['resnet']['type'],
         weight_decay=cfg['optimizer']['resnet']['weight_decay']
     )
