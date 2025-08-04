@@ -1,0 +1,25 @@
+dataset:
+  name: cifar100
+  num_classes: 100
+  image_size: 224
+
+training:
+  batch_size: 64
+  epochs: 40
+  val_split: 0.1
+  seed: 42
+
+optimizer:
+  vit:
+    type: adam
+    lr: 5e-5
+    weight_decay: 0.01
+    freeze: false
+  resnet:
+    type: sgd
+    lr: 1e-3
+    weight_decay: 1e-4
+
+hardware:
+  num_workers: 2
+  device: cuda
