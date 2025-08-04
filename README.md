@@ -1,30 +1,71 @@
+# ViT vs. ResNet for CIFAR-100 Classification
+
+A modular PyTorch project comparing the performance of **Vision Transformer (ViT-Base-16)** and **ResNet-50** on the CIFAR-100 dataset.
+
+---
+
+## 📦 Structure
+```
 vision_project/
-│
-├── data/
-│   ├── prepare_data.py        # دانلود و پیش‌پردازش داده‌ها
-│   └── augmentations.py       # اعمال افزایش داده
-│
-├── models/
-│   ├── vit_model.py           # آماده‌سازی و تغییر ساختار ViT
-│   └── resnet_model.py        # آماده‌سازی و تغییر ساختار ResNet
-│
-├── train/
-│   ├── train_vit.py           # آموزش ViT
-│   └── train_resnet.py        # آموزش ResNet
-│
-├── evaluate/
-│   ├── evaluate.py            # محاسبه دقت، زمان، سایز و ...
-│   └── robustness.py          # ارزیابی مقاومت با نویز (اختیاری)
-│
-├── visualize/
-│   ├── vit_attention.py       # بصری‌سازی attention در ViT
-│   └── resnet_gradcam.py      # Grad-CAM برای ResNet
-│
-├── utils/
-│   └── helpers.py             # توابع کمکی مثل شمارش پارامتر، ذخیره مدل و ...
-│
-├── configs/
-│   └── config.yaml            # تنظیمات قابل تغییر (batch size, lr و ...)
-│
-├── main.py                    # اجرای پروژه از ابتدا تا انتها
-└── README.md
+├── data/                # Data loading and augmentation
+├── models/              # ViT and ResNet definitions
+├── train/               # Training scripts
+├── evaluate/            # Accuracy, speed, FLOPs
+├── visualize/           # Attention & Grad-CAM
+├── utils/               # Helpers (seed, save/load, etc.)
+├── configs/             # config.yaml with hyperparameters
+├── main.py              # Main pipeline script
+└── README.md            # You are here
+```
+
+---
+
+## 📊 Features
+- ✅ Fine-tuning pretrained **ViT-Base-16** from `timm`
+- ✅ Fine-tuning **ResNet-50** from `torchvision`
+- ✅ Configurable training via YAML
+- ✅ Modular & readable codebase
+- ✅ Evaluation: accuracy, speed, model size, FLOPs
+- ✅ Visualization: attention maps (ViT), Grad-CAM (ResNet)
+
+---
+
+## 🧪 Quick Start
+```bash
+# Clone and install dependencies
+pip install -r requirements.txt
+
+# Run the full pipeline
+python main.py
+```
+
+---
+
+## ⚙️ Configuration
+Edit `configs/config.yaml` to change:
+- learning rates
+- optimizers
+- batch size / epochs
+- freezing ViT layers
+
+---
+
+## 📁 Dataset
+Using CIFAR-100 (downloaded automatically).
+
+---
+
+## 📈 Evaluation Metrics
+- Top-1 Accuracy (train / val / test)
+- Training time per epoch
+- Inference time per sample
+- Number of parameters
+- FLOPs (via `ptflops`)
+
+---
+
+## 📌 Visualization
+- `vit_attention.py`: attention map overlay for ViT
+- `resnet_gradcam.py`: Grad-CAM for CNN explanation
+
+---
