@@ -4,6 +4,7 @@ import torch.optim as optim
 from tqdm import tqdm
 from data.prepare_data import get_cifar100_dataloaders
 from models.resnet_model import get_resnet_model
+import os
 
 def train(model, train_loader, val_loader, device, epochs=30, lr=1e-3, optimizer_type='sgd', weight_decay=1e-4, logger=None):
     model.to(device)
@@ -18,6 +19,9 @@ def train(model, train_loader, val_loader, device, epochs=30, lr=1e-3, optimizer
     best_val_acc = 0.0
     patience = 5
     patience_counter = 0
+
+    os.makedirs("checkpoints", exist_ok=True)
+    best_model_path = os.path.join("checkpoints", "best_resnet.pth")
 
     for epoch in range(epochs):
         model.train()
@@ -50,7 +54,11 @@ def train(model, train_loader, val_loader, device, epochs=30, lr=1e-3, optimizer
         if val_acc > best_val_acc:
             best_val_acc = val_acc
             patience_counter = 0
-            torch.save(model.state_dict(), "best_resnet.pth")
+            torch.save(model.state_dict(), best_model_path)
+            if logger:
+                logger.info(f"Best model saved to {best_model_path}")
+            else:
+                print(f"Best model saved to {best_model_path}")
         else:
             patience_counter += 1
             if patience_counter >= patience:

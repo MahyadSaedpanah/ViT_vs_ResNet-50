@@ -21,6 +21,9 @@ def train(model, train_loader, val_loader, device, epochs=30, lr=5e-5, weight_de
     patience = 5
     patience_counter = 0
 
+    os.makedirs("checkpoints", exist_ok=True)
+    best_model_path = os.path.join("checkpoints", "vit.pth")
+
     for epoch in range(epochs):
         model.train()
         running_loss = 0.0
@@ -54,7 +57,12 @@ def train(model, train_loader, val_loader, device, epochs=30, lr=5e-5, weight_de
         if val_acc > best_val_acc:
             best_val_acc = val_acc
             patience_counter = 0
-            torch.save(model.state_dict(), "best_vit.pth")
+            # torch.save(model.state_dict(), "best_vit.pth")
+            torch.save(model.state_dict(), best_model_path)
+            if logger:
+                logger.info(f"Best model saved to {best_model_path}")
+            else:
+                print(f"Best model saved to {best_model_path}")
         else:
             patience_counter += 1
             if patience_counter >= patience:
