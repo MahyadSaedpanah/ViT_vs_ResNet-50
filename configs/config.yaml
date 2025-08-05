@@ -5,9 +5,10 @@ dataset:
 
 training:
   batch_size: 64
-  epochs: 40
+  epochs: 5
   val_split: 0.1
   seed: 42
+  subset_ratio: 0.5
 
 optimizer:
   vit:

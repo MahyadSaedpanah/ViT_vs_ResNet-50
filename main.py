@@ -20,10 +20,13 @@ if __name__ == "__main__":
     set_seed(cfg['training']['seed'])
     device = torch.device(cfg['hardware']['device'] if torch.cuda.is_available() else 'cpu')
 
+    subset_ratio = cfg['training'].get('subset_ratio', 1.0)
+
     # Data
     train_loader, val_loader, test_loader = get_cifar100_dataloaders(
         batch_size=cfg['training']['batch_size'],
         val_split=cfg['training']['val_split'],
+        subset_ratio=subset_ratio,
         num_workers=cfg['hardware']['num_workers']
     )
 
