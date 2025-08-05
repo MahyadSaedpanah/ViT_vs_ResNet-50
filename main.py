@@ -39,7 +39,7 @@ if __name__ == "__main__":
         val_loader=val_loader,
         device=device,
         epochs=cfg['training']['epochs'],
-        lr=cfg['optimizer']['vit']['lr'],
+        lr = float(cfg['optimizer']['vit']['lr']),
         weight_decay=cfg['optimizer']['vit']['weight_decay'],
         freeze=cfg['optimizer']['vit']['freeze']
     )

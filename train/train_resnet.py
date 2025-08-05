@@ -5,7 +5,7 @@ from tqdm import tqdm
 from data.prepare_data import get_cifar100_dataloaders
 from models.resnet_model import get_resnet_model
 
-def train(model, train_loader, val_loader, device, epochs=30, lr=1e-3, optimizer_type='sgd', weight_decay=1e-4):
+def train(model, train_loader, val_loader, device, epochs=30, lr=1e-3, optimizer_type='sgd', weight_decay=1e-4, logger=None):
     model.to(device)
     
     criterion = nn.CrossEntropyLoss()
@@ -41,7 +41,11 @@ def train(model, train_loader, val_loader, device, epochs=30, lr=1e-3, optimizer
         train_acc = 100 * correct / total
         val_acc = evaluate(model, val_loader, device)
 
-        print(f"Epoch {epoch+1}: Train Loss={running_loss:.4f}, Train Acc={train_acc:.2f}%, Val Acc={val_acc:.2f}%")
+        message = f"Epoch {epoch+1}: Train Loss={running_loss:.4f}, Train Acc={train_acc:.2f}%, Val Acc={val_acc:.2f}%"
+        if logger:
+            logger.info(message)
+        else:
+            print(message)
 
         if val_acc > best_val_acc:
             best_val_acc = val_acc
@@ -50,7 +54,10 @@ def train(model, train_loader, val_loader, device, epochs=30, lr=1e-3, optimizer
         else:
             patience_counter += 1
             if patience_counter >= patience:
-                print("Early stopping triggered.")
+                if logger:
+                    logger.info("Early stopping triggered.")
+                else:
+                    print("Early stopping triggered.")
                 break
 
 def evaluate(model, data_loader, device):

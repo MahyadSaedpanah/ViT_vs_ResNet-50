@@ -6,7 +6,7 @@ from data.prepare_data import get_cifar100_dataloaders
 from models.vit_model import get_vit_model
 import os
 
-def train(model, train_loader, val_loader, device, epochs=30, lr=5e-5, weight_decay=0.01, freeze=False):
+def train(model, train_loader, val_loader, device, epochs=30, lr=5e-5, weight_decay=0.01, freeze=False, logger=None):
     model.to(device)
 
     if freeze:
@@ -43,7 +43,12 @@ def train(model, train_loader, val_loader, device, epochs=30, lr=5e-5, weight_de
         train_acc = 100 * correct / total
         val_acc = evaluate(model, val_loader, device)
 
-        print(f"Epoch {epoch+1}: Train Loss={running_loss:.4f}, Train Acc={train_acc:.2f}%, Val Acc={val_acc:.2f}%")
+        # print(f"Epoch {epoch+1}: Train Loss={running_loss:.4f}, Train Acc={train_acc:.2f}%, Val Acc={val_acc:.2f}%")
+        message = f"Epoch {epoch+1}: Train Loss={running_loss:.4f}, Train Acc={train_acc:.2f}%, Val Acc={val_acc:.2f}%"
+        if logger:
+            logger.info(message)
+        else:
+            print(message)
 
         # Early stopping
         if val_acc > best_val_acc:
@@ -53,7 +58,10 @@ def train(model, train_loader, val_loader, device, epochs=30, lr=5e-5, weight_de
         else:
             patience_counter += 1
             if patience_counter >= patience:
-                print("Early stopping triggered.")
+                if logger:
+                    logger.info("Early stopping triggered.")
+                else:
+                    print("Early stopping triggered.")
                 break
 
 def evaluate(model, data_loader, device):
