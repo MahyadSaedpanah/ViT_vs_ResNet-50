@@ -22,7 +22,7 @@ def train(model, train_loader, val_loader, device, epochs=30, lr=5e-5, weight_de
     patience_counter = 0
 
     os.makedirs("checkpoints", exist_ok=True)
-    best_model_path = os.path.join("checkpoints", "vit.pth")
+    best_model_path = os.path.join("checkpoints", "best_vit.pth")
 
     for epoch in range(epochs):
         model.train()

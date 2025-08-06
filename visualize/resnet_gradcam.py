@@ -63,6 +63,6 @@ def apply_gradcam(model, image: Image.Image, device):
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = get_resnet_model()
-    model.load_state_dict(torch.load("best_resnet.pth", map_location=device))
+    model.load_state_dict(torch.load("checkpoints/best_resnet.pth", map_location=device))
     image = Image.open("sample.jpg").convert("RGB")
     apply_gradcam(model, image, device)
