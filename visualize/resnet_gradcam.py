@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 from models.resnet_model import get_resnet_model
-from torchvision.models.feature_extraction import create_feature_extractor
-
+import torch.nn.functional as F
+import os
 
 def apply_gradcam(model, image: Image.Image, device):
     model.eval()
@@ -19,50 +19,72 @@ def apply_gradcam(model, image: Image.Image, device):
 
     input_tensor = transform(image).unsqueeze(0).to(device)
 
-    # Register hook on the last conv layer
-    target_layer = "layer4"
-    return_nodes = {target_layer: "feat"}
-    extractor = create_feature_extractor(model, return_nodes=return_nodes)
+    gradients = []
+    activations = []
 
-    activations = {}
-    def hook_fn(module, input, output):
-        activations['value'] = output
+    def save_activation(module, input, output):
+        activations.append(output.detach())
 
-    handle = extractor[target_layer].register_forward_hook(hook_fn)
+    def save_gradient(module, grad_input, grad_output):
+        gradients.append(grad_output[0].detach())
 
-    # Forward pass
-    output = extractor(input_tensor)
-    logits = model(input_tensor)
-    class_idx = torch.argmax(logits, dim=1).item()
+    target_layer = model.layer4[2].conv3
+    handle_forward = target_layer.register_forward_hook(save_activation)
+    handle_backward = target_layer.register_full_backward_hook(save_gradient)
 
-    # Backward pass
+    output = model(input_tensor)
+    class_idx = torch.argmax(output, dim=1).item()
     model.zero_grad()
-    logits[0, class_idx].backward()
-    gradients = extractor[target_layer].weight.grad  # (out_channels, in_channels, k, k)
+    output[0, class_idx].backward()
 
-    pooled_gradients = torch.mean(gradients, dim=[0, 2, 3])
-    activation = activations['value'].squeeze(0)
+    handle_forward.remove()
+    handle_backward.remove()
 
-    for i in range(activation.shape[0]):
-        activation[i, :, :] *= pooled_gradients[i]
+    if not gradients or not activations:
+        print("No activations or gradients captured.")
+        return
 
-    heatmap = activation.mean(dim=0).cpu().detach().numpy()
-    heatmap = np.maximum(heatmap, 0)
-    heatmap /= heatmap.max()
-    heatmap = np.uint8(255 * heatmap)
-    heatmap = Image.fromarray(heatmap).resize((224, 224), Image.Resampling.BILINEAR)
+    grad = gradients[0]
+    act = activations[0]
+    weights = grad.mean(dim=[2, 3], keepdim=True)
+    cam = (weights * act).sum(dim=1).squeeze()
+    cam = F.relu(cam)
+
+    if cam.max() == 0:
+        print("CAM is zero. No informative gradients.")
+        return
+
+    cam = cam - cam.min()
+    cam = cam / cam.max()
+    cam = cam.cpu().numpy()
+    cam = np.uint8(255 * cam)
+    cam = Image.fromarray(cam).resize((224, 224), Image.Resampling.BILINEAR)
 
     plt.imshow(image.resize((224, 224)))
-    plt.imshow(heatmap, cmap='jet', alpha=0.5)
+    plt.imshow(cam, cmap='jet', alpha=0.5)
     plt.title("Grad-CAM - ResNet")
     plt.axis('off')
+    plt.savefig("gradcam_output.png")
     plt.show()
 
-    handle.remove()
 
 if __name__ == "__main__":
+    import sys
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = get_resnet_model()
-    model.load_state_dict(torch.load("checkpoints/best_resnet.pth", map_location=device))
+
+    try:
+        model.load_state_dict(torch.load("checkpoints/best_resnet.pth", map_location=device))
+        print("Loaded trained model weights from checkpoints/best_resnet.pth")
+    except:
+        print("Failed to load trained weights. Using pretrained ResNet instead.")
+
+    if not os.path.exists("sample.jpg"):
+        print("Downloading default sample image...")
+        import urllib.request
+        urllib.request.urlretrieve("https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg", "sample.jpg")
+
     image = Image.open("sample.jpg").convert("RGB")
     apply_gradcam(model, image, device)
