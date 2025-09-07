@@ -1,0 +1,58 @@
+Total params: 85.88M | Trainable: 0.08M
+=== Stage 1: Head-only training ===
+/tmp/ipython-input-998498422.py:59: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=cfg["amp"])
+/tmp/ipython-input-1935023283.py:21: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=scaler is not None):
+Epoch 001 | train_loss=0.9581 acc=0.7452 | val_loss=0.7336 acc=0.7882 | 287.9s
+  >> Saved best: ./outputs/best_vit.pt (val_acc=0.7882)
+Epoch 002 | train_loss=0.6293 acc=0.8168 | val_loss=0.7203 acc=0.7992 | 286.8s
+  >> Saved best: ./outputs/best_vit.pt (val_acc=0.7992)
+Epoch 003 | train_loss=0.5690 acc=0.8313 | val_loss=0.7074 acc=0.8032 | 290.8s
+  >> Saved best: ./outputs/best_vit.pt (val_acc=0.8032)
+Epoch 004 | train_loss=0.5279 acc=0.8424 | val_loss=0.7197 acc=0.8034 | 287.6s
+  >> Saved best: ./outputs/best_vit.pt (val_acc=0.8034)
+Epoch 005 | train_loss=0.4953 acc=0.8489 | val_loss=0.7298 acc=0.8032 | 289.7s
+EarlyStopping counter: 1/5
+Epoch 006 | train_loss=0.4747 acc=0.8547 | val_loss=0.7213 acc=0.8072 | 284.5s
+  >> Saved best: ./outputs/best_vit.pt (val_acc=0.8072)
+Epoch 007 | train_loss=0.4646 acc=0.8563 | val_loss=0.7486 acc=0.8024 | 290.0s
+EarlyStopping counter: 1/5
+Epoch 008 | train_loss=0.4422 acc=0.8638 | val_loss=0.7393 acc=0.8030 | 287.9s
+EarlyStopping counter: 2/5
+Epoch 009 | train_loss=0.4407 acc=0.8637 | val_loss=0.7364 acc=0.8026 | 287.6s
+EarlyStopping counter: 3/5
+Epoch 010 | train_loss=0.3646 acc=0.8877 | val_loss=0.6543 acc=0.8158 | 284.7s
+  >> Saved best: ./outputs/best_vit.pt (val_acc=0.8158)
+=== Stage 2: Full fine-tuning ===
+[FT] Epoch 001 | train_loss=0.4181 acc=0.8714 | val_loss=0.4278 acc=0.8754 | 368.8s
+  >> Saved best: ./outputs/best_vit.pt (val_acc=0.8754)
+[FT] Epoch 002 | train_loss=0.2401 acc=0.9223 | val_loss=0.4750 acc=0.8636 | 366.2s
+EarlyStopping counter: 1/5
+[FT] Epoch 003 | train_loss=0.1637 acc=0.9466 | val_loss=0.5265 acc=0.8640 | 365.3s
+EarlyStopping counter: 2/5
+[FT] Epoch 004 | train_loss=0.1408 acc=0.9547 | val_loss=0.5448 acc=0.8574 | 363.4s
+EarlyStopping counter: 3/5
+[FT] Epoch 005 | train_loss=0.0479 acc=0.9843 | val_loss=0.5183 acc=0.8864 | 360.6s
+  >> Saved best: ./outputs/best_vit.pt (val_acc=0.8864)
+[FT] Epoch 006 | train_loss=0.0302 acc=0.9903 | val_loss=0.5191 acc=0.8916 | 361.9s
+  >> Saved best: ./outputs/best_vit.pt (val_acc=0.8916)
+[FT] Epoch 007 | train_loss=0.0304 acc=0.9910 | val_loss=0.5450 acc=0.8838 | 361.1s
+EarlyStopping counter: 1/5
+[FT] Epoch 008 | train_loss=0.0353 acc=0.9889 | val_loss=0.6529 acc=0.8656 | 360.9s
+EarlyStopping counter: 2/5
+[FT] Epoch 009 | train_loss=0.0362 acc=0.9886 | val_loss=0.5708 acc=0.8806 | 363.4s
+EarlyStopping counter: 3/5
+[FT] Epoch 010 | train_loss=0.0104 acc=0.9970 | val_loss=0.5340 acc=0.8962 | 360.8s
+  >> Saved best: ./outputs/best_vit.pt (val_acc=0.8962)
+[FT] Epoch 011 | train_loss=0.0075 acc=0.9978 | val_loss=0.5675 acc=0.8944 | 360.6s
+EarlyStopping counter: 1/5
+[FT] Epoch 012 | train_loss=0.0058 acc=0.9982 | val_loss=0.5952 acc=0.8930 | 358.5s
+EarlyStopping counter: 2/5
+[FT] Epoch 013 | train_loss=0.0077 acc=0.9977 | val_loss=0.6283 acc=0.8880 | 359.4s
+EarlyStopping counter: 3/5
+[FT] Epoch 014 | train_loss=0.0042 acc=0.9988 | val_loss=0.5856 acc=0.9004 | 358.1s
+  >> Saved best: ./outputs/best_vit.pt (val_acc=0.9004)
+[FT] Epoch 015 | train_loss=0.0038 acc=0.9989 | val_loss=0.5918 acc=0.8972 | 358.1s
+EarlyStopping counter: 1/5
+TEST: loss=0.5884 acc=0.9020
