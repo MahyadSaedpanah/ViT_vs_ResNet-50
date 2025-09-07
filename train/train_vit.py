@@ -27,6 +27,7 @@ def train(model, train_loader, val_loader, device, epochs=30, lr=5e-5, weight_de
     for epoch in range(epochs):
         model.train()
         running_loss = 0.0
+        num_samples = 0 
         correct = 0
         total = 0
 
@@ -37,17 +38,29 @@ def train(model, train_loader, val_loader, device, epochs=30, lr=5e-5, weight_de
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
+            
+            running_loss += loss.item() * labels.size(0)
+            num_samples  += labels.size(0)
 
-            running_loss += loss.item()
+
+            # running_loss += loss.item()
             _, predicted = torch.max(outputs, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
+
+        avg_train_loss = running_loss / num_samples
 
         train_acc = 100 * correct / total
         val_acc = evaluate(model, val_loader, device)
 
         # print(f"Epoch {epoch+1}: Train Loss={running_loss:.4f}, Train Acc={train_acc:.2f}%, Val Acc={val_acc:.2f}%")
-        message = f"Epoch {epoch+1}: Train Loss={running_loss:.4f}, Train Acc={train_acc:.2f}%, Val Acc={val_acc:.2f}%"
+        # message = f"Epoch {epoch+1}: Train Loss={running_loss:.4f}, Train Acc={train_acc:.2f}%, Val Acc={val_acc:.2f}%"
+        message = (
+            f"Epoch {epoch+1}: "
+            f"Train Loss={avg_train_loss:.4f}, "
+            f"Train Acc={train_acc:.2f}%, "
+            f"Val Acc={val_acc:.2f}%"
+        )
         if logger:
             logger.info(message)
         else:
