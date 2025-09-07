@@ -13,7 +13,7 @@ def get_cifar100_dataloaders(data_dir="/home/mahyad/projects/ViT_vs_ResNet-50/da
     train_transform = transforms.Compose([
         transforms.Resize((224, 224)),
         transforms.RandomHorizontalFlip(),
-        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1), #1st: add this
+        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1), 
         transforms.RandomCrop(224, padding=4),
         transforms.ToTensor(),
         transforms.Normalize(mean, std)
