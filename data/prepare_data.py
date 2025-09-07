@@ -6,8 +6,8 @@ import random
 
 def get_cifar100_dataloaders(data_dir="/home/mahyad/projects/ViT_vs_ResNet-50/data", batch_size=64, val_split=0.1, subset_ratio=1.0, num_workers=2):
     # Mean and std of CIFAR-100 for normalization
-    mean = (0.5071, 0.4865, 0.4409)
-    std = (0.2673, 0.2564, 0.2761)
+    mean = (0.485, 0.456, 0.406)
+    std  = (0.229, 0.224, 0.225)
 
     # Transforms
     train_transform = transforms.Compose([
